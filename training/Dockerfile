@@ -23,22 +23,23 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 # Add conda to PATH
 ENV PATH=$CONDA_DIR/bin:$PATH
 
-RUN useradd -m dockeruser
-USER dockeruser
-
-# Update Conda and create the environment with Python 3.9
-RUN conda update -n base -c defaults conda && \
-    conda create -n skingpt4_llama2 python=3.9 && \
-    conda clean -a
-
-# Activate the environment and install packages with CUDA 12.5
-RUN /bin/bash -c "source activate skingpt4_llama2 && \
-    conda install -c conda-forge mamba=1.4.7 && \
-    pip3 install torch torchvision torchaudio pytest"
-
 # Set the NVIDIA runtime environment variable
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+
+# Update Conda and create the environment with Python 3.9
+RUN conda update -n base -c defaults conda && \
+conda create -n skingpt4_llama2 python=3.9 && \
+conda clean -a
+
+# Activate the environment and install packages with CUDA 12.5
+RUN /bin/bash -c "source activate skingpt4_llama2 && \
+conda install -c conda-forge mamba=1.4.7 && \
+pip3 install torch torchvision torchaudio pytest"
+
+
+RUN useradd -m dockeruser
+USER dockeruser
 
 # Set the default shell to activate the conda environment
 SHELL ["conda", "run", "-n", "skingpt4_llama2", "/bin/bash", "-c"]
