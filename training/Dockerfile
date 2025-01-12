@@ -38,9 +38,8 @@ RUN /bin/bash -c "source activate skingpt4_llama2 && \
 conda install -c conda-forge mamba=1.4.7 && \
 pip3 install torch torchvision torchaudio pytest"
 
-
-RUN useradd -m dockeruser
-USER dockeruser
+# RUN useradd -m dockeruser
+# USER dockeruser
 
 RUN echo "source $CONDA_DIR/etc/profile.d/conda.sh" >> ~/.bashrc && \
     echo "conda activate skingpt4_llama2" >> ~/.bashrc
@@ -49,7 +48,7 @@ RUN echo "source $CONDA_DIR/etc/profile.d/conda.sh" >> ~/.bashrc && \
 SHELL ["/bin/bash", "-c"]
 
 # Set the working directory
-WORKDIR /workspace
+WORKDIR /root
 
 # Default command
 CMD ["bash"]
