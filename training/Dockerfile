@@ -22,6 +22,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 
 # Add conda to PATH
 ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda init bash
 
 # Set the NVIDIA runtime environment variable
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -41,8 +42,11 @@ pip3 install torch torchvision torchaudio pytest"
 RUN useradd -m dockeruser
 USER dockeruser
 
+RUN echo "source $CONDA_DIR/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate skingpt4_llama2" >> ~/.bashrc
+
 # Set the default shell to activate the conda environment
-SHELL ["conda", "run", "-n", "skingpt4_llama2", "/bin/bash", "-c"]
+SHELL ["/bin/bash", "-c"]
 
 # Set the working directory
 WORKDIR /workspace
