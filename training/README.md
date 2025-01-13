@@ -2,8 +2,10 @@
 
 ## Docker file Instructions
 
-- To build the docker file: `docker build -t skingpt4_llama2_image .`
-- To run the docker file: `docker run -it --gpus all -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis skingpt4_llama2_image`
+- [CPU] To build the docker file: `docker build -f Dockerfile.cpu -t fsdhack:cpu .`
+- [GPU] To build the docker file: `docker build -f Dockerfile.gpu -t fsdhack:gpu .`
+- [CPU] To run the docker file: `docker run -it -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsdhack:cpu`
+- [GPU] To run the docker file: `docker run -it --gpus all -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsdhack:gpu`
 
 ## Dataset Instructions
 
