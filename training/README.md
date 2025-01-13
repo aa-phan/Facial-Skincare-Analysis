@@ -2,10 +2,10 @@
 
 ## Docker file Instructions
 
-- [CPU] To build the docker file: `docker build -f Dockerfile.cpu -t fsdhack:cpu .`
-- [GPU] To build the docker file: `docker build -f Dockerfile.gpu -t fsdhack:gpu .`
-- [CPU] To run the docker file: `docker run -it -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsdhack:cpu`
-- [GPU] To run the docker file: `docker run -it --gpus all -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsdhack:gpu`
+- [CPU] To build the docker file: `docker build -f Dockerfile.cpu -t fsahack:cpu .`
+- [GPU] To build the docker file: `docker build -f Dockerfile.gpu -t fsahack:gpu .`
+- [CPU] To run the docker file: `docker run -it -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsahack:cpu`
+- [GPU] To run the docker file: `docker run -it --gpus all -v ~/Facial-Skincare-Analysis:/root/Facial-Skincare-Analysis fsahack:gpu`
 
 ## Dataset Instructions
 

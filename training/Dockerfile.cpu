@@ -27,11 +27,11 @@ RUN conda init bash
 
 # Update Conda and create the environment with Python 3.9
 RUN conda update -n base -c defaults conda && \
-    conda create -n facial_skin_diagnosis python=3.9 && \
+    conda create -n fca python=3.9 && \
     conda clean -a
 
 # Activate the environment and install packages (CPU-only PyTorch)
-RUN /bin/bash -c "source activate facial_skin_diagnosis && \
+RUN /bin/bash -c "source activate fca && \
     conda install -c conda-forge mamba=1.4.7 && \
     pip3 install --extra-index-url https://download.pytorch.org/whl/cpu \
         torch torchvision torchaudio pytest"
@@ -42,7 +42,7 @@ RUN /bin/bash -c "source activate facial_skin_diagnosis && \
 
 # Ensure your Conda environment is activated by default
 RUN echo 'source $CONDA_DIR/etc/profile.d/conda.sh' >> ~/.bashrc && \
-    echo 'conda activate facial_skin_diagnosis' >> ~/.bashrc
+    echo 'conda activate fca' >> ~/.bashrc
 
 # Set the default shell to activate the conda environment
 SHELL ["/bin/bash", "-c"]
