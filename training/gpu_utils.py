@@ -16,7 +16,7 @@ def get_gpu_info() -> list[dict]:
         gpu_info.append({"id": i, "name": gpu_name})
     return gpu_info
 
-def test_tensor_operation() -> torch.Tensor:
+def tensor_operation() -> torch.Tensor:
     """🧮 Perform a simple tensor operation on the GPU."""
     if not is_cuda_available():
         raise RuntimeError("❌ CUDA is not available.")
