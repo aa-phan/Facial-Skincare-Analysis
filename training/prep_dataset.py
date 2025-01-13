@@ -37,6 +37,8 @@ for idx, row in df.iterrows():
 
     except requests.RequestException as e:
         print(f"Failed to download image from {url} due to {e}")
+        with open("failed_downloads.log", "a") as log_file:
+            log_file.write(f"Failed to download image from {url} due to {e}\n")
 
 
 df_success = pd.DataFrame(successful_rows, columns=["label", "url"])
