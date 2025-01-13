@@ -38,7 +38,7 @@ conda clean -a
 # Activate the environment and install packages with CUDA 12.5
 RUN /bin/bash -c "source activate fca && \
 conda install -c conda-forge mamba=1.4.7 && \
-pip3 install torch torchvision torchaudio pytest pandas aiohttp"
+pip3 install torch torchvision torchaudio pytest pandas aiohttp wandb tqdm Pillow numpy matplotlib"
 
 # RUN useradd -m dockeruser
 # USER dockeruser
