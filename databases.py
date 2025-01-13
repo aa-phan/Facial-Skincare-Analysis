@@ -9,7 +9,7 @@ def initialize_supabase():
     key = os.getenv('SUPABASE_API_KEY')
     return create_client(url, key)
 
-def find_products(ingredients=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None):
+def find_products(ingredients=None, exclude_ingredients=None, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None):
     """
     Query skincare products based on multiple filter criteria.
     
@@ -27,9 +27,13 @@ def find_products(ingredients=None, combination=None, dry=None, normal=None, oil
     """
     # Query data from the combined_skincare_products view
     supabase = initialize_supabase()
-    query = supabase.table("combined_skincare_products").select("*").execute()
+    query = supabase.table("combined_skincare_products").select("*")
     if ingredients:
         query = query.ilike("ingredients", f"%{ingredients}%")
+    if exclude_ingredients:
+        query = query.not_.ilike("ingredients", f"%{exclude_ingredients}%")
+    if max_price is not None:
+        query=query.lte("price", max_price)
     if combination is not None:
         query = query.eq("combination", combination)
     if dry is not None:
