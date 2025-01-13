@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     git \
     sudo \
     vim \
+    htop \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda
@@ -34,7 +35,7 @@ RUN conda update -n base -c defaults conda && \
 RUN /bin/bash -c "source activate fca && \
     conda install -c conda-forge mamba=1.4.7 && \
     pip3 install --extra-index-url https://download.pytorch.org/whl/cpu \
-        torch torchvision torchaudio pytest"
+        torch torchvision torchaudio pytest pandas aiohttp"
 
 # If needed, create a user (commented out by default)
 # RUN useradd -m dockeruser

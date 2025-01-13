@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     git \
     sudo \
     vim \
+    htop \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda
@@ -37,7 +38,7 @@ conda clean -a
 # Activate the environment and install packages with CUDA 12.5
 RUN /bin/bash -c "source activate fca && \
 conda install -c conda-forge mamba=1.4.7 && \
-pip3 install torch torchvision torchaudio pytest"
+pip3 install torch torchvision torchaudio pytest pandas aiohttp"
 
 # RUN useradd -m dockeruser
 # USER dockeruser
