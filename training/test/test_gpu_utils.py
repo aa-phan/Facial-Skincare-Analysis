@@ -15,7 +15,7 @@ def test_gpu_info_format():
         assert all("id" in gpu and "name" in gpu for gpu in gpu_info), "❌ GPU entries must have 'id' and 'name'."
         print("📝 GPU info format check passed!")
     else:
-        print("⚠️ CUDA not available, skipping GPU info format test.")
+        pytest.skip("⚠️ CUDA not available, skipping GPU info format test.")
 
 def test_tensor_gpu_operation():
     """🧮 Test tensor operation on GPU."""
