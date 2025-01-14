@@ -20,7 +20,7 @@ from dataset import DatasetProcessing
 def freeze_first_five_layers(resnet_model):
     """
     Freeze the first 5 layers of a ResNet model.
-    In resnet18, the children typically are:
+    In resnet50, the children typically are:
         0: conv1
         1: bn1
         2: relu
@@ -35,7 +35,7 @@ def freeze_first_five_layers(resnet_model):
     """
     child_counter = 0
     for child in resnet_model.children():
-        if child_counter < 3:  # freeze first 5 children
+        if child_counter < 5:  # freeze first 5 children
             for param in child.parameters():
                 param.requires_grad = False
         child_counter += 1
@@ -69,7 +69,7 @@ def save_checkpoint(model, optimizer, epoch, save_path):
 # Main training function
 # -----------------------------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Train ResNet18")
+    parser = argparse.ArgumentParser(description="Train resnet50")
     parser.add_argument('--data_dir', type=str, default='data/fitzpatrick17k_data', help='Path to dataset')
     parser.add_argument('--csv_file', type=str, default='labels_fitzpatrick17k.csv', help='Labels CSV file')
     parser.add_argument('--epochs', type=int, default=5, help='Number of epochs to train')
@@ -111,18 +111,18 @@ def main():
     )
 
     # -------------------------------------------------------------------------
-    # Build ResNet18, freeze first 5 layers, and randomly init final layer
+    # Build resnet50, freeze first 5 layers, and randomly init final layer
     # -------------------------------------------------------------------------
-    resnet18 = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
+    resnet50 = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
     # Freeze the first 5 layers
-    freeze_first_five_layers(resnet18)
+    freeze_first_five_layers(resnet50)
 
     # Replace the final layer with an output of size 4
-    in_features = resnet18.fc.in_features
-    resnet18.fc = nn.Linear(in_features, 4)
+    in_features = resnet50.fc.in_features
+    resnet50.fc = nn.Linear(in_features, 4)
 
     # Randomly initialize the final layer
-    initialize_fc_layer(resnet18.fc)
+    initialize_fc_layer(resnet50.fc)
 
     # Although user mentioned "Ensure SoftMax for classification reasons":
     # Typically for training with CrossEntropyLoss, we do NOT add a Softmax layer.
@@ -134,15 +134,15 @@ def main():
     criterion = nn.CrossEntropyLoss()
     # Only train the unfrozen layers
     # (since the first 5 are frozen, only the rest + fc are trainable)
-    trainable_parameters = (p for p in resnet18.parameters() if p.requires_grad)
+    trainable_parameters = (p for p in resnet50.parameters() if p.requires_grad)
     optimizer = optim.Adam(trainable_parameters, lr=args.lr)
 
     # Move model to device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    resnet18.to(device)
+    resnet50.to(device)
 
     # Watch the model with wandb (tracks gradients, etc.)
-    wandb.watch(resnet18, log="all")
+    wandb.watch(resnet50, log="all")
 
     # -------------------------------------------------------------------------
     # Create checkpoints folder if not exists
@@ -159,7 +159,7 @@ def main():
         # ---------------------------
         # Training Phase
         # ---------------------------
-        resnet18.train()
+        resnet50.train()
         train_loss = 0.0
         train_correct = 0
         train_total = 0
@@ -171,7 +171,7 @@ def main():
             images, labels = images.to(device), labels.to(device)
 
             optimizer.zero_grad()
-            outputs = resnet18(images)
+            outputs = resnet50(images)
             loss = criterion(outputs, labels)
 
             loss.backward()
@@ -192,7 +192,7 @@ def main():
         # ---------------------------
         # Validation Phase
         # ---------------------------
-        resnet18.eval()
+        resnet50.eval()
         val_loss = 0.0
         val_correct = 0
         val_total = 0
@@ -202,7 +202,7 @@ def main():
         with torch.no_grad():
             for images, labels in val_iterator:
                 images, labels = images.to(device), labels.to(device)
-                outputs = resnet18(images)
+                outputs = resnet50(images)
                 loss = criterion(outputs, labels)
 
                 val_loss += loss.item() * images.size(0)
@@ -238,7 +238,7 @@ def main():
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             checkpoint_path = os.path.join("checkpoints", f"best_checkpoint_epoch_{epoch+1}.pth")
-            save_checkpoint(resnet18, optimizer, epoch+1, checkpoint_path)
+            save_checkpoint(resnet50, optimizer, epoch+1, checkpoint_path)
 
     print("Training completed!")
 
