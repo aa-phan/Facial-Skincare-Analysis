@@ -34,7 +34,7 @@ def analyze_pareto_products(pareto_results):
 
     **Best Brand Alignment:** [Product Name] (List top 2-3 scores) - Explanation of brand preference match.
 
-    **Best for Sensitive Skin:** [Product Name] (List top 2-3 scores) - Explanation of skin compatibility.
+    **Most Compatible with Skin:** [Product Name] (List top 2-3 scores) - Explanation of skin compatibility.
 
     **Best Rated By Customers:** [Product Name] (List top 2-3 scores) - Explanation of positive customer sentiment.
     |||

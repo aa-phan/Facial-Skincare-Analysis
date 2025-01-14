@@ -19,8 +19,14 @@ def rating_maximization(rating=None):
     return rating / 5  # Assuming rating is out of 5
 
 def skin_type_suitability(skin_type_booleans, target_skin_type):
-    matches = sum(bool(skin_type_booleans.get(skin, False)) for skin in target_skin_type)
-    return matches / len(target_skin_type) if target_skin_type else 0
+    if all(skin_type is None for skin_type in target_skin_type):
+        return 1
+    valid_target_skin_types = [skin for skin in target_skin_type if skin is not None]
+    
+    matches = sum(bool(skin_type_booleans.get(skin, False)) for skin in valid_target_skin_types)
+    total = len(valid_target_skin_types)
+    
+    return matches / total if total > 0 else 0
 
 
 def brand_preference(brand=None, preferred_brands=None):
@@ -33,11 +39,11 @@ def brand_preference(brand=None, preferred_brands=None):
         return 0  # Return 0 if either parameter is missing
     return 1 if brand in preferred_brands else 0
 
-def pareto_front(database_results):
+def pareto_front(database_results, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None):
     evaluated_products = []
     
     for product in database_results:
-        price_score = price_optimization(product.get("price"), 50)
+        price_score = price_optimization(product.get("price"), max_price)
         rating_score = rating_maximization(product.get("rank"))
         skin_score = skin_type_suitability({
                 "combination": product.get("combination", False),
@@ -45,7 +51,7 @@ def pareto_front(database_results):
                 "normal": product.get("normal", False),
                 "oily": product.get("oily", False),
                 "sensitive": product.get("sensitive", False)
-            }, ["sensitive","dry"])
+            }, [combination, dry, normal, oily, sensitive])
         brand_score = brand_preference(product.get("brand"), ["CLINIQUE", "DRUNK ELEPHANT"])
         evaluated_products.append({
             "name": product["name"],

@@ -5,23 +5,23 @@ from llm_analysis import analyze_pareto_products
 def product_select(ingredients=None, exclude_ingredients=None, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None, analyze_with_llm=False):
     database_set = find_products(ingredients, exclude_ingredients, max_price, combination, dry, normal, oily, sensitive, product_type)
        
-    pareto_results = pareto_set.pareto_front(database_set)
+    pareto_results = pareto_set.pareto_front(database_set, max_price, combination, dry, normal, oily, sensitive)
     
     if analyze_with_llm:
         analyze_pareto_products(pareto_results)
         
     else:     
         print("\nPareto-optimal products:")
-        for i, product in enumerate(pareto_results):
+        for i, product in enumerate(pareto_results, start=1):
             print(f"\n{i}. {product['name']}")
             print("Scores:")
             for objective, score in product['scores'].items():
                 print(f"  {objective}: {score:.2f}")
-    
+
     
                 
 def main():
-    product_select(ingredients="niacinamide", analyze_with_llm=True)
+    product_select(ingredients="niacinamide", max_price=100,analyze_with_llm=True)
     
 if __name__ == "__main__":
     main()
