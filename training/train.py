@@ -6,6 +6,7 @@ import torch.nn as nn
 import torchvision.models as models
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
+from torch.optim.lr_scheduler import StepLR
 from tqdm import tqdm
 
 from dataset import DatasetProcessing
@@ -137,6 +138,8 @@ def main():
     trainable_parameters = (p for p in resnet50.parameters() if p.requires_grad)
     optimizer = optim.Adam(trainable_parameters, lr=args.lr)
 
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.1)
+
     # Move model to device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     resnet50.to(device)
@@ -230,6 +233,8 @@ def main():
             "val_loss": val_loss,
             "val_acc": val_acc
         })
+
+        scheduler.step()
 
         # ---------------------------
         # Checkpoint saving
