@@ -1,11 +1,13 @@
-def price_optimization(price=None):
+def price_optimization(price=None, preferred_price=None):
     """
     Objective: Minimize price.
     Returns a score inversely proportional to the price.
     """
-    if price is None or price <= 0:
-        return 0  # Return 0 for invalid or missing price
-    return 1 / (1 + price)
+    if price is None or price <= 0 or preferred_price is None or preferred_price <= 0:
+        return 0  # Return 0 for invalid or missing prices
+    
+    ratio = price / preferred_price
+    return 1 / (1 + ratio)
 
 def rating_maximization(rating=None):
     """
@@ -35,7 +37,7 @@ def pareto_front(database_results):
     evaluated_products = []
     
     for product in database_results:
-        price_score = price_optimization(product.get("price"))
+        price_score = price_optimization(product.get("price"), 50)
         rating_score = rating_maximization(product.get("rank"))
         skin_score = skin_type_suitability({
                 "combination": product.get("combination", False),
