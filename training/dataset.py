@@ -1,74 +1,42 @@
-import os
-import pandas as pd
-import numpy as np
 import torch
+import os
 from PIL import Image
-from torch.utils.data import Dataset
-from pathlib import Path
+from torch.utils.data.dataset import Dataset
+import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
+import torchvision.transforms as transforms
+
+class DatasetProcessing(Dataset):
+    def __init__(self):
+        csv_path = "Classification/NNEW_trainval_0.txt"
+        self.df = pd.read_csv(csv_path, sep='\\s+', header=None, names=['img', 'label', 'lesion'])
+        self.df = self.df.dropna()
+
+    def __getitem__(self, index):
+        img, label, _ = self.df.iloc[index]
+
+        img_path = os.path.join("Classification","JPEGImages", img)
+        image = Image.open(img_path).convert('RGB')
+        image = np.array(image)
+        label = torch.tensor(label)
+
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+
+        image = transform(image)
+
+        return image, label
+
+    def __len__(self):
+        return len(self.df)
 
 
-# TODO: data augmentation: resize images to 256x256 ✅
-# TODO: data augmentation: randomly rotate images 0 to 15 degree
-# TODO: data augmentation: randomly alter brightness, contrast, saturation and hue
-# TODO: data augmentation: randomly flip images horizontally or vertically
-
-def map_class_labels(csv_file: str = "labels_fitzpatrick17k.csv") -> dict:
-    df = pd.read_csv(csv_file)
-    labels = df["label"].values
-    return {label: i for i, label in enumerate(set(labels))}
-
-
-class FacialSkincareDataset(Dataset):
-    def __init__(self, data_dir: str, csv_file: str) -> None:
-        """
-        Args:
-            data_dir (str): Path to the directory containing image files.
-            csv_file (str): Path to the CSV file containing labels (and optionally file paths).
-        """
-        df = pd.read_csv(csv_file)
-        self.labels = df["label"].values # NOTE: TOTAL 114 CLASSES
-
-        self.files = Path(data_dir).glob("*")  # all files in the directory
-        self.files = [f for f in self.files if f.is_file()]
-
-        if len(self.labels) != len(self.files):
-            raise ValueError(
-                f"Number of labels ({len(self.labels)}) does not match "
-                f"number of images ({len(self.files)})"
-            )
-
-    def __len__(self) -> int:
-        return len(self.labels)
-
-    def __getitem__(self, idx: int) -> tuple[Image.Image, int]:
-        """
-        Args:
-            idx (int): index
-
-        Returns:
-            (image, label): Tuple of a PIL.Image and a label (e.g. int or string).
-        """
-
-        label = self.labels[idx]
-        image_path = self.files[idx]
-
-        with Image.open(image_path) as img:
-            img = img.convert("RGB")
-            img = img.resize((256, 256))
-            img = np.array(img)
-            img = torch.tensor(img, dtype=torch.float32)
-            img = img.permute(2, 0, 1)
-
-            label = map_class_labels()[label]
-            label = torch.tensor(label, dtype=torch.long)
-            return img, label
-
-if __name__ == '__main__':
-    dataset = FacialSkincareDataset(
-        data_dir="data/fitzpatrick17k_data",
-        csv_file="labels_fitzpatrick17k.csv"
-    )
-    image, label = dataset[0]
-    print("Label:", label)
+if __name__ == "__main__":
+    ds = DatasetProcessing()
+    print(ds[0])
     breakpoint()

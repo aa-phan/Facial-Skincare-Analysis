@@ -1,3 +1,4 @@
 *.jpg
 wandb/
 __pycache__/
+*.txt

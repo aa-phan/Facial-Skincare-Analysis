@@ -8,7 +8,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
 
-from dataset import FacialSkincareDataset
+from dataset import DatasetProcessing
 
 
 # TODO: Training: weighted random sampling
@@ -35,7 +35,7 @@ def freeze_first_five_layers(resnet_model):
     """
     child_counter = 0
     for child in resnet_model.children():
-        if child_counter < 5:  # freeze first 5 children
+        if child_counter < 3:  # freeze first 5 children
             for param in child.parameters():
                 param.requires_grad = False
         child_counter += 1
@@ -69,7 +69,7 @@ def save_checkpoint(model, optimizer, epoch, save_path):
 # Main training function
 # -----------------------------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Train ResNet18 on FacialSkincareDataset")
+    parser = argparse.ArgumentParser(description="Train ResNet18")
     parser.add_argument('--data_dir', type=str, default='data/fitzpatrick17k_data', help='Path to dataset')
     parser.add_argument('--csv_file', type=str, default='labels_fitzpatrick17k.csv', help='Labels CSV file')
     parser.add_argument('--epochs', type=int, default=5, help='Number of epochs to train')
@@ -89,10 +89,7 @@ def main():
     # -------------------------------------------------------------------------
     # Prepare Dataset and DataLoaders
     # -------------------------------------------------------------------------
-    dataset = FacialSkincareDataset(
-        data_dir=args.data_dir,
-        csv_file=args.csv_file
-    )
+    dataset = DatasetProcessing()
 
     # Split dataset into training (80%) and validation (20%)
     train_size = int(0.8 * len(dataset))
@@ -120,9 +117,9 @@ def main():
     # Freeze the first 5 layers
     freeze_first_five_layers(resnet18)
 
-    # Replace the final layer with an output of size 114
+    # Replace the final layer with an output of size 4
     in_features = resnet18.fc.in_features
-    resnet18.fc = nn.Linear(in_features, 114)
+    resnet18.fc = nn.Linear(in_features, 4)
 
     # Randomly initialize the final layer
     initialize_fc_layer(resnet18.fc)
