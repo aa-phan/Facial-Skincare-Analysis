@@ -1,3 +1,7 @@
+*.jpg
+wandb/
+__pycache__/
+*.txt
 .env
 __pycache__
 .vscode
