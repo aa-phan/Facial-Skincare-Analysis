@@ -25,6 +25,12 @@ To install GlowAI, follow these steps:
    pip install -r requirements.txt
 
 4. Make an **uploads** folder under the **static** folder
+5. Follow the instructions in the training folder to build and run the Docker container, and start the model server with
+   ```bash
+   python endpoint.py
+6. Start the application with
+   ```bash
+   python app.py
 
 ## Contributing
 
