@@ -1,6 +1,9 @@
 from databases import find_products, initialize_supabase
 import pareto_set
 from llm_analysis import analyze_pareto_products
+import requests, os
+from llm_analysis import rag_ingredients
+
 
 def product_select(ingredients=None, exclude_ingredients=None, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None, analyze_with_llm=False):
     database_set = find_products(ingredients, exclude_ingredients, max_price, combination, dry, normal, oily, sensitive, product_type)
@@ -21,7 +24,36 @@ def product_select(ingredients=None, exclude_ingredients=None, max_price=None, c
     
                 
 def main():
-    product_select(ingredients="niacinamide", max_price=100,analyze_with_llm=True)
+    images_folder = r"C:\Users\Aaron\Documents\Facial-Skincare-Analysis\training\images"
+    
+    # Specify the image file name
+    image_filename = "aaron_test.jpg"
+    
+    # Construct the full path to the image
+    image_path = os.path.join(images_folder, image_filename)
+    
+    url = 'http://localhost:5000/predict'
+    try:
+        with open(image_path, 'rb') as image_file:
+            files = {'image': image_file}
+            response = requests.post(url, files=files)
+
+        if response.status_code == 200:
+            result = response.json()
+            prediction = int(result['prediction'])
+            #print(f"Prediction: {prediction}")
+            suggested_ingredients = rag_ingredients(prediction)
+            for ing in suggested_ingredients:
+                product_select(ingredients=ing, max_price=100,analyze_with_llm=True)
+        else:
+            print(f"Error: {response.status_code}")
+            print(f"Response content: {response.text}")
+    except FileNotFoundError:
+        print(f"Image file not found at: {image_path}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}")
+        
+    
     
 if __name__ == "__main__":
     main()
