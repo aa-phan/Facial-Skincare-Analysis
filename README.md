@@ -24,6 +24,7 @@ To install GlowAI, follow these steps:
    ```bash
    pip install -r requirements.txt
 
+4. Make an **uploads** folder under the **static** folder
 
 ## Contributing
 
