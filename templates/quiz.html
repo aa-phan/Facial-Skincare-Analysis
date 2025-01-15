@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowAI</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1 class="title">GlowAI</h1>
+
+    <div class="photo">
+        <h2 class="photoTitle">Upload Your Photo</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <input class="upload" type="file" id="photo" name="photo" accept="image/*">
+            <button class="upload2">Upload</button>
+        </form>
+
+    </div>
+
+    <div class="quiz">
+        <h3 class="quizTitle">Quiz</h3>
+        <form action="/select_product" method="POST">
+            <input type="text" id="location" name="location" placeholder="Location">
+            <input type="number" id="age" name="age" placeholder="Age">
+            <input type="text" id="gender" name="gender" placeholder="Gender">
+            <input type="text" id="race" name="race" placeholder="Race">
+            <input type="text" id="skin sensitivity" name="skin sensitivity" placeholder="Skin Sensitivity">
+            <input type="number" id="price" name="price" placeholder="Price">
+            <input type="text" id="product" name="product" placeholder="Desired Product(s)">
+            <button type="submit" class="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="analysis">
+        <h2>AI Analysis of Selected Products:</h2>
+        <div class="aicontent">
+            <p>{{ ai_response }}</p>
+        </div>
+    </div>
+</body>
+</html>

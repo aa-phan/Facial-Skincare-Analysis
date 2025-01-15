@@ -1,0 +1,150 @@
+html {
+    font-family:'Courier New', Courier, monospace;
+    background-color: #88b2f2;
+}
+
+.title {
+    color: #326bc1;
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+    font-size: xx-large;
+}
+
+.centerpls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.consent {
+    text-align: center;
+    color:#326bc1;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    max-width: 400px;
+    width: 90%;
+}
+
+.consent button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #88b2f2;
+    color:white;
+}
+
+.consent button:hover {
+    background-color: #ffffff;
+    color:#88b2f2;
+    border: 2px solid #88b2f2;
+}
+
+.quiz {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.quizTitle {
+    font-size: x-large;
+    color: #326bc1;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+input {
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #88b2f2;
+    border-radius: 5px;
+}
+
+input:hover {
+    border: 2px solid #326bc1;
+}
+
+.submit {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #88b2f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit:hover {
+    background-color: white;
+    border: 2px solid #88b2f2;
+    color: #88b2f2;
+}
+
+.photoTitle {
+    color: #326bc1;
+    display: flex;
+    justify-content: center;
+}
+
+.photo {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.upload {
+    border: none;
+}
+.upload:hover {
+    border:none;
+}
+
+.upload2 {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #88b2f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload2:hover{
+    background-color: white;
+    border: 2px solid #88b2f2;
+    color: #88b2f2;
+}
+
+.analysis {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.analysis h2 {
+    color:#326bc1;
+}
+
+.aicontent {
+    color:#326bc1;
+}
