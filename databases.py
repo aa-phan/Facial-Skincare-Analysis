@@ -7,6 +7,8 @@ def initialize_supabase():
     load_dotenv()
     url = os.getenv('SUPABASE_URL')
     key = os.getenv('SUPABASE_API_KEY')
+    if not url or not key:
+        raise ValueError("Supabase URL or API key not found.")
     return create_client(url, key)
 
 def find_products(ingredients=None, exclude_ingredients=None, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None):
