@@ -55,6 +55,7 @@ def pareto_front(database_results, max_price=None, combination=None, dry=None, n
         brand_score = brand_preference(product.get("brand"), ["CLINIQUE", "DRUNK ELEPHANT"])
         evaluated_products.append({
             "name": product["name"],
+            "brand": product["brand"],
             "scores": {
                 "price": price_score,
                 "rating": rating_score,

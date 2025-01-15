@@ -19,6 +19,8 @@ def rag_ingredients(prediction=None):
         1: Moderate severity
         2: High severity
         3: Extreme severity
+        
+        Please output ingredient names in their standard format, with spaces between words (e.g. 'salicyclic acid', not 'salicylicacid').
         """
         analysis_text+=str(prediction)
         
@@ -58,7 +60,7 @@ def analyze_pareto_products(pareto_results):
         return "No products available for analysis."
     
     load_dotenv()
-    LLM_key = os.getenv('LLM_KEY')
+    LLM_key = os.getenv('NEBIUS_API_KEY')
     client = OpenAI(
         base_url="https://api.studio.nebius.ai/v1/",
         api_key = LLM_key
@@ -68,6 +70,7 @@ def analyze_pareto_products(pareto_results):
     analysis_text = "Analyze these Pareto-optimal skincare products:\n\n"
     for product in pareto_results:
         analysis_text += f"Product: {product['name']}\n"
+        analysis_text+=f"Brand: {product['brand']}\n"
         analysis_text += "Scores (higher is better, scale 0-1):\n"
         for objective, score in product['scores'].items():
             analysis_text += f"- {objective}: {score:.2f}\n"
@@ -75,15 +78,15 @@ def analyze_pareto_products(pareto_results):
     
     analysis_text += """Based on the provided scores, please provide key recommendations for different user priorities in the following format, where only text between the /// and ||| limiters indicate the format of your response. Do not include those limiters in the final output:
     ///
-    **Best Overall Product:** [Product Name] (List top 2-3 scores) - Brief explanation of why it excels.
+    **Best Overall Product:** [Brand Name] | [Product Name] (List top 2-3 scores) - Brief explanation of why it excels.
 
-    **Best Value for Money:** [Product Name] (List top 2-3 scores) - Brief explanation of its value proposition.
+    **Best Value for Money:** [Brand Name] | [Product Name]  (List top 2-3 scores) - Brief explanation of its value proposition.
 
-    **Best Brand Alignment:** [Product Name] (List top 2-3 scores) - Explanation of brand preference match.
+    **Best Brand Alignment:** [Brand Name] | [Product Name]  (List top 2-3 scores) - Explanation of brand preference match.
 
-    **Most Compatible with Skin:** [Product Name] (List top 2-3 scores) - Explanation of skin compatibility.
+    **Most Compatible with Skin:** [Brand Name] | [Product Name]  (List top 2-3 scores) - Explanation of skin compatibility.
 
-    **Best Rated By Customers:** [Product Name] (List top 2-3 scores) - Explanation of positive customer sentiment.
+    **Best Rated By Customers:** [Brand Name] | [Product Name]  (List top 2-3 scores) - Explanation of positive customer sentiment.
     |||
     
     IMPORTANT: Interpret the scores as follows:
@@ -116,7 +119,7 @@ def analyze_pareto_products(pareto_results):
         print("-" * 50)
         print(completion.choices[0].message.content)
 
-        return completion.choices[0].message["content"]
+        return completion.choices[0].message.content
         
     except Exception as e:
         print(f"Error getting LLM analysis: {str(e)}")

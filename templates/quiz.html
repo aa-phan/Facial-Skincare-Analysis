@@ -35,7 +35,20 @@
     <div class="analysis">
         <h2>AI Analysis of Selected Products:</h2>
         <div class="aicontent">
-            <p>{{ ai_response }}</p>
+            {% if ai_response %}
+                <div class="ai-response">
+                    <div class="response-section">
+                        <h2>AI Response:</h2>
+                        <div class="response-item">
+                            <p>{{ ai_response | replace('\n', '<br>') | replace('**', '<b>') | replace('</b>', '') | safe }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="error-message">
+                    <p>No response available at the moment. Please try again later.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 </body>

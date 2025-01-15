@@ -3,6 +3,7 @@ import pareto_set
 from llm_analysis import analyze_pareto_products
 import requests, os
 from llm_analysis import rag_ingredients
+import glob
 
 
 def product_select(ingredients=None, exclude_ingredients=None, max_price=None, combination=None, dry=None, normal=None, oily=None, sensitive=None, product_type=None, analyze_with_llm=False):
@@ -11,7 +12,7 @@ def product_select(ingredients=None, exclude_ingredients=None, max_price=None, c
     pareto_results = pareto_set.pareto_front(database_set, max_price, combination, dry, normal, oily, sensitive)
     
     if analyze_with_llm:
-        analyze_pareto_products(pareto_results)
+        return analyze_pareto_products(pareto_results)
         
     else:     
         print("\nPareto-optimal products:")
@@ -25,12 +26,10 @@ def product_select(ingredients=None, exclude_ingredients=None, max_price=None, c
                 
 def main():
     images_folder = r"C:\Users\Aaron\Documents\Facial-Skincare-Analysis\training\images"
-    
-    # Specify the image file name
-    image_filename = "aaron_test.jpg"
-    
+    image_files = glob.glob(os.path.join(images_folder, "*.jpg"))
+
     # Construct the full path to the image
-    image_path = os.path.join(images_folder, image_filename)
+    image_path = image_files[0]
     
     url = 'http://localhost:5000/predict'
     try:
