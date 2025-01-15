@@ -2,53 +2,6 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 
-def rag_ingredients(prediction=None):
-    if prediction is None or not isinstance(prediction, int) or prediction < 0 or prediction > 3:
-        return -1 #invalid input
-    else:
-        load_dotenv()
-        LLM_key = os.getenv('NEBIUS_API_KEY')
-        client = OpenAI(
-            base_url="https://api.studio.nebius.ai/v1/",
-            api_key = LLM_key
-        )
-        analysis_text = """
-        Find me one ingredient that is good at treating acne based on the condition severity that I provide. 
-        Note these interpretations of scores for what severity of acne they indicate:
-        0: Mild severity
-        1: Moderate severity
-        2: High severity
-        3: Extreme severity
-        """
-        analysis_text+=str(prediction)
-        
-        try:
-            completion = client.chat.completions.create(
-                model="meta-llama/Meta-Llama-3.1-70B-Instruct-fast",
-                messages=[
-                    {"role": "system", "content": "You are a skincare expert looking for three ingredients that can best treat the level of acne severity provided to you. Please only return a single ingredient like this: ingredient. There should be no additional text, whitespace, commas, or numbers."},
-                    {"role": "user", "content": analysis_text}
-                ],
-                temperature=1.0,
-                max_tokens=512,
-                top_p=1.0,
-                presence_penalty=0.7
-                
-            )
-
-            ingredients_string = completion.choices[0].message.content.strip()
-            ingredients_array = [ingredient.strip() for ingredient in ingredients_string.split(',')]
-
-            #print("\nIngredients list:")
-            #print("-" * 50)
-            print(ingredients_array)
-
-            return ingredients_array
-
-        except Exception as e:
-            print(f"Error getting LLM analysis: {str(e)}")
-            return None
-        
 def analyze_pareto_products(pareto_results):
     """
     Analyze Pareto-optimal products using Nebius AI to provide insights about
@@ -57,8 +10,12 @@ def analyze_pareto_products(pareto_results):
     Args:
         pareto_results: List of products with their scores from pareto_front()
     """
+
+    if not pareto_results:
+        return "No products available for analysis."
+    
     load_dotenv()
-    LLM_key = os.getenv('NEBIUS_API_KEY')
+    LLM_key = os.getenv('LLM_KEY')
     client = OpenAI(
         base_url="https://api.studio.nebius.ai/v1/",
         api_key = LLM_key
@@ -115,6 +72,8 @@ def analyze_pareto_products(pareto_results):
         print("Note: Scores range from 0 to 1, where a higher score indicates better performance with a given trait.")
         print("-" * 50)
         print(completion.choices[0].message.content)
+
+        return completion.choices[0].message["content"]
         
     except Exception as e:
         print(f"Error getting LLM analysis: {str(e)}")
